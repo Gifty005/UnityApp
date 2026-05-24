@@ -1,6 +1,6 @@
 # ============================================================
 # UNITY APP - main.py
-# Part 1 of 6 | Written by: [Gift Attah] | Matric: [2013]
+# Part 1 of 6 | Written by: Attah Gift | Matric: [3013]
 # Responsibilities: App core, DataManager class, Splash,
 #                   Login, and Join screens
 # ============================================================
@@ -27,9 +27,8 @@ FONT_SM   = ("Arial", 9)
 FONT_BOLD = ("Arial", 11, "bold")
 
 
-# ╔══════════════════════════════════════════════════════════╗
-# ║              DATA MANAGER  (reads/writes CSV)            ║
-# ╚══════════════════════════════════════════════════════════╝
+
+#              DATA MANAGER  (reads/writes CSV)            
 class DataManager:
     """Handles all CSV reading and writing for the Unity App."""
 
@@ -43,7 +42,11 @@ class DataManager:
     # ── users ────────────────────────────────────────────────
     def _clean(self, row):
         """Strip whitespace and carriage returns from all CSV row values."""
-        return {k.strip(): v.strip() for k, v in row.items()}
+        result = {}
+        for k, v in row.items():
+            if k is not None and v is not None:
+                result[k.strip()] = v.strip()
+        return result
 
     def get_users(self):
         users = {}
@@ -83,7 +86,10 @@ class DataManager:
                 reader = csv.DictReader(f)
                 for row in reader:
                     row = self._clean(row)
-                    if topic is None or topic == "All" or row.get("Topic") == topic:
+                    if not row:
+                        continue
+                    row_topic = row.get("Topic", "").strip()
+                    if topic is None or topic == "All" or row_topic == topic:
                         cards.append(row)
         except FileNotFoundError:
             pass
@@ -167,9 +173,9 @@ class DataManager:
             writer.writerows(updated)
 
 
-# ╔══════════════════════════════════════════════════════════╗
-# ║                     UNITY APP SHELL                      ║
-# ╚══════════════════════════════════════════════════════════╝
+ 
+#                      UNITY APP SHELL                      
+ 
 class UnityApp(tk.Tk):
     """Root application window — manages screen switching."""
 
@@ -283,9 +289,8 @@ class UnityApp(tk.Tk):
         self.show_frame(screens[15])
 
 
-# ╔══════════════════════════════════════════════════════════╗
-# ║                     SPLASH SCREEN                        ║
-# ╚══════════════════════════════════════════════════════════╝
+
+#                     SPLASH SCREEN                        
 class SplashScreen(tk.Frame):
     def __init__(self, parent, app):
         super().__init__(parent, bg=BG)
@@ -300,15 +305,9 @@ class SplashScreen(tk.Frame):
         center = tk.Frame(self, bg=BG)
         center.grid(row=0, column=0)
 
-        # coloured circles (A K C)
-        canvas = tk.Canvas(center, width=100, height=100, bg=BG, highlightthickness=0)
-        canvas.pack(pady=(60, 8))
-        canvas.create_oval(0, 10, 55, 65, fill="#E63950", outline="")   # red  – A
-        canvas.create_oval(35, 0, 90, 55, fill="#3A86FF", outline="")   # blue – K
-        canvas.create_oval(20, 40, 75, 95, fill="#2EC4B6", outline="")  # teal – C
-        canvas.create_text(20, 37, text="A", fill=WHITE, font=("Arial", 14, "bold"))
-        canvas.create_text(65, 27, text="K", fill=WHITE, font=("Arial", 14, "bold"))
-        canvas.create_text(47, 68, text="C", fill=WHITE, font=("Arial", 14, "bold"))
+        # plain unity icon
+        tk.Label(center, text="🤝", bg=BG,
+                 font=("Arial", 60)).pack(pady=(60, 8))
 
         tk.Label(center, text="Unity App", bg=BG, fg=WHITE,
                  font=("Arial", 22, "bold")).pack()
@@ -316,9 +315,9 @@ class SplashScreen(tk.Frame):
                  font=("Arial", 11, "italic")).pack(pady=(4, 0))
 
 
-# ╔══════════════════════════════════════════════════════════╗
-# ║                      LOGIN SCREEN                        ║
-# ╚══════════════════════════════════════════════════════════╝
+
+#                       LOGIN SCREEN                        
+
 class LoginScreen(tk.Frame):
     def __init__(self, parent, app):
         super().__init__(parent, bg=BG)
@@ -332,16 +331,9 @@ class LoginScreen(tk.Frame):
         card = tk.Frame(self, bg=PURPLE, padx=40, pady=35)
         card.grid(row=0, column=0)
 
-        # logo row
-        logo_row = tk.Frame(card, bg=PURPLE)
-        logo_row.pack(pady=(0, 12))
-        canvas = tk.Canvas(logo_row, width=42, height=42, bg=PURPLE, highlightthickness=0)
-        canvas.pack(side="left", padx=(0, 8))
-        canvas.create_oval(0, 5, 24, 29, fill="#E63950", outline="")
-        canvas.create_oval(14, 0, 38, 24, fill="#3A86FF", outline="")
-        canvas.create_oval(8, 18, 32, 42, fill="#2EC4B6", outline="")
-        tk.Label(logo_row, text="Unity App", bg=PURPLE, fg=WHITE,
-                 font=("Arial", 13, "bold")).pack(side="left")
+        # plain title
+        tk.Label(card, text="🤝  Unity App", bg=PURPLE, fg=WHITE,
+                 font=("Arial", 16, "bold")).pack(pady=(0, 12))
 
         tk.Label(card, text="Peace starts from sharing", bg=PURPLE, fg=GRAY,
                  font=FONT_SM).pack(pady=(0, 18))
@@ -381,9 +373,9 @@ class LoginScreen(tk.Frame):
             messagebox.showerror("Unity App", "Invalid username or password.")
 
 
-# ╔══════════════════════════════════════════════════════════╗
-# ║                       JOIN SCREEN                        ║
-# ╚══════════════════════════════════════════════════════════╝
+ 
+#                        JOIN SCREEN                        
+
 class JoinScreen(tk.Frame):
     def __init__(self, parent, app):
         super().__init__(parent, bg=BG)
