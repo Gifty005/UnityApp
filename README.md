@@ -88,7 +88,7 @@ unity-app/
 1. Make sure Python 3 is installed on your computer
 2. Clone this repository
 3. Make sure all CSV files are in the same folder as the Python files
-4. Run the app:
+4. Run the app by entering the terminal in the folder and running "python main.py":
 5. Click Create New Account to register
 
 ## Submission
